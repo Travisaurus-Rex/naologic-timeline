@@ -20,16 +20,13 @@
           @for (col of columns; track col) {
             <div class="grid-cell"></div>
           }
-          @for (order of workOrders; track order.docId) {
-            @if (order.data.workCenterId === wc.docId) {
-              <div
-                class="work-order-bar"
-                [style.left.px]="order.data.dayIndex * 150"
-                [style.width.px]="order.data.duration * 150"
-              >
-                <span class="bar-label">{{ order.data.label }}</span>
-                <span class="bar-status">Complete</span>
-              </div>
+          @for (pos of barPositions(); track pos.order.docId) {
+            @if (pos.order.data.workCenterId === wc.docId) {
+              <app-work-order-bar
+                [order]="pos.order"
+                [left]="pos.left"
+                [width]="pos.width"
+              ></app-work-order-bar>
             }
           }
         </div>

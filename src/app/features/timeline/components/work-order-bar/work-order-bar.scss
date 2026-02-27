@@ -1,0 +1,19 @@
+.work-order-bar {
+  position: absolute;
+  top: 5px;
+  border-radius: 8px;
+  background: #eef0ff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  z-index: 1;
+  gap: 8px;
+  height: 38px;
+}
+
+.bar-label {
+  font-size: 13px;
+  color: #1a1a2e;
+  white-space: nowrap;
+}

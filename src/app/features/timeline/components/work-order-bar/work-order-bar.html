@@ -1,1 +1,9 @@
-<p>work-order-bar works!</p>
+<div
+  class="work-order-bar"
+  [style.left.px]="left"
+  [style.width.px]="width"
+  [ngStyle]="order.data.status | barStyle"
+>
+  <span class="bar-label">{{ order.data.name }}</span>
+  <app-pill [status]="order.data.status"></app-pill>
+</div>
