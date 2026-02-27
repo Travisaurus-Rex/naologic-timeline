@@ -11,13 +11,13 @@
 
     <div class="right-panel">
       <div class="header-row">
-        @for (col of columns; track col) {
-          <div class="col-header">{{ col }}</div>
+        @for (col of columns(); track col) {
+          <div class="col-header">{{ col | colHeader }}</div>
         }
       </div>
       @for (wc of workCenters; track wc.docId) {
         <div class="grid-row">
-          @for (col of columns; track col) {
+          @for (col of columns(); track col) {
             <div class="grid-cell"></div>
           }
           @for (pos of barPositions(); track pos.order.docId) {
