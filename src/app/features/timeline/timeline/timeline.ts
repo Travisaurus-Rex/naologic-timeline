@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { WorkOrderBar } from '../components/work-order-bar/work-order-bar';
 import { WORK_CENTERS, WORK_ORDERS } from '../../../data/data';
 import { computed, signal } from '@angular/core';
-import { differenceInDays } from 'date-fns';
+import { addDays, differenceInDays, subDays } from 'date-fns';
 import { ColHeaderPipe } from '../../../core/pipes/column-header';
 import { WorkOrderDocument } from '../../../models/work-order';
 
@@ -21,15 +21,19 @@ export class Timeline {
   columnWidth = signal(150);
 
   timelineStart = computed(() => {
-    const dates = this.workOrders().map(
-      (order: WorkOrderDocument) => new Date(order.data.startDate),
-    );
-    return new Date(Math.min(...dates.map((d) => d.getTime())));
+    const dates = this.workOrders().map((o) => new Date(o.data.startDate));
+    const earliest = dates.length
+      ? new Date(Math.min(...dates.map((d) => d.getTime())))
+      : new Date();
+    return subDays(earliest, 3);
   });
 
   timelineEnd = computed(() => {
-    const dates = this.workOrders().map((order: WorkOrderDocument) => new Date(order.data.endDate));
-    return new Date(Math.max(...dates.map((d) => d.getTime())));
+    const dates = this.workOrders().map((o) => new Date(o.data.endDate));
+    const latest = dates.length
+      ? new Date(Math.max(...dates.map((d) => d.getTime())))
+      : addDays(new Date(), 60);
+    return addDays(latest, 3);
   });
 
   columns = computed(() => {
