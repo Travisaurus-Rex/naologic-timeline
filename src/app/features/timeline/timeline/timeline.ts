@@ -6,6 +6,7 @@ import { WORK_CENTERS, WORK_ORDERS } from '../../../data/data';
 import { computed, signal } from '@angular/core';
 import { differenceInDays } from 'date-fns';
 import { ColHeaderPipe } from '../../../core/pipes/column-header';
+import { WorkOrderDocument } from '../../../models/work-order';
 
 @Component({
   selector: 'app-timeline',
@@ -15,17 +16,19 @@ import { ColHeaderPipe } from '../../../core/pipes/column-header';
 })
 export class Timeline {
   workCenters = WORK_CENTERS;
-  workOrders = WORK_ORDERS;
+  workOrders = signal<WorkOrderDocument[]>(WORK_ORDERS);
 
   columnWidth = signal(150);
 
   timelineStart = computed(() => {
-    const dates = this.workOrders.map((o) => new Date(o.data.startDate));
+    const dates = this.workOrders().map(
+      (order: WorkOrderDocument) => new Date(order.data.startDate),
+    );
     return new Date(Math.min(...dates.map((d) => d.getTime())));
   });
 
   timelineEnd = computed(() => {
-    const dates = this.workOrders.map((o) => new Date(o.data.endDate));
+    const dates = this.workOrders().map((order: WorkOrderDocument) => new Date(order.data.endDate));
     return new Date(Math.max(...dates.map((d) => d.getTime())));
   });
 
@@ -40,7 +43,7 @@ export class Timeline {
   });
 
   barPositions = computed(() => {
-    return this.workOrders.map((order) => ({
+    return this.workOrders().map((order: WorkOrderDocument) => ({
       order,
       left:
         differenceInDays(new Date(order.data.startDate), this.timelineStart()) * this.columnWidth(),
@@ -49,4 +52,8 @@ export class Timeline {
         this.columnWidth(),
     }));
   });
+
+  deleteOrder(order: WorkOrderDocument) {
+    this.workOrders.update((orders) => orders.filter((o) => o.docId !== order.docId));
+  }
 }

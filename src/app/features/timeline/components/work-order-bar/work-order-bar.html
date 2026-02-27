@@ -5,5 +5,16 @@
   [ngStyle]="order.data.status | barStyle"
 >
   <span class="bar-label">{{ order.data.name }}</span>
-  <app-pill [status]="order.data.status"></app-pill>
+  <div class="bar-right">
+    <app-pill [status]="order.data.status"></app-pill>
+    <div class="edit-btn-wrapper">
+      <button class="edit-btn" (click)="toggleMenu($event)">...</button>
+    </div>
+  </div>
 </div>
+<ng-template #dropdownTemplate>
+  <div class="dropdown">
+    <button class="dropdown-item">Edit</button>
+    <button class="dropdown-item delete" (click)="onDelete()">Delete</button>
+  </div>
+</ng-template>
