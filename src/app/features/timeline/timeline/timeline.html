@@ -1,0 +1,33 @@
+<div class="timeline-container">
+  <app-timeline-header></app-timeline-header>
+
+  <div class="timeline-body">
+    <!-- Left Fixed Column -->
+    <div class="timeline-left">
+      <div class="timeline-row header-cell">Work Center</div>
+
+      <div class="timeline-row" *ngFor="let wc of workCenters">
+        {{ wc.data.name }}
+      </div>
+    </div>
+
+    <!-- Right Scrollable Grid -->
+    <div class="timeline-right">
+      <div class="timeline-grid">
+        <!-- Header row -->
+        <div class="timeline-row header-row">
+          <div class="time-cell" *ngFor="let col of columns">
+            {{ col }}
+          </div>
+        </div>
+
+        <!-- Work center rows -->
+        <div class="timeline-row" *ngFor="let wc of workCenters">
+          <div class="grid-row">
+            <!-- bars will go here later -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
