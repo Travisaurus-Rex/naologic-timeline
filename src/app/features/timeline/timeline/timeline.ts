@@ -57,6 +57,42 @@ export class Timeline {
     }));
   });
 
+  hoveredWorkCenterId = signal<string | null>(null);
+
+  hoveredDate = signal<Date | null>(null);
+
+  ghostLeft = signal<number>(-9999);
+
+  onGridMouseLeave() {
+    this.hoveredDate.set(null);
+  }
+
+  onGridMouseMove(event: MouseEvent, workCenterId: string) {
+    const rightPanel = event.currentTarget as HTMLElement;
+    const panelRect = rightPanel.closest('.right-panel')!.getBoundingClientRect();
+    const scrollLeft = rightPanel.closest('.right-panel')!.scrollLeft;
+
+    const xForDate = event.clientX - panelRect.left + scrollLeft;
+    const xForGhost = xForDate - 75;
+
+    const maxLeft = (this.columns().length - 1) * this.columnWidth();
+    const clampedX = Math.max(0, Math.min(xForGhost, maxLeft));
+
+    const days = Math.floor(xForDate / this.columnWidth());
+    const hovered = addDays(this.timelineStart(), days);
+
+    const isOverOrder = this.workOrders().some(
+      (o) =>
+        o.data.workCenterId === workCenterId &&
+        hovered >= new Date(o.data.startDate) &&
+        hovered <= new Date(o.data.endDate),
+    );
+
+    this.hoveredDate.set(isOverOrder ? null : hovered);
+    this.ghostLeft.set(isOverOrder ? -9999 : clampedX);
+    this.hoveredWorkCenterId.set(workCenterId);
+  }
+
   deleteOrder(order: WorkOrderDocument) {
     this.workOrders.update((orders) => orders.filter((o) => o.docId !== order.docId));
   }

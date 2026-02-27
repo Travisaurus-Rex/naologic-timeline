@@ -47,6 +47,7 @@
   display: flex;
   border-bottom: 1px solid #e5e5e5;
   height: 48px;
+  min-width: fit-content;
 }
 
 .col-header {
@@ -64,6 +65,7 @@
   height: 48px;
   border-bottom: 1px solid #e5e5e5;
   position: relative;
+  min-width: fit-content;
 }
 
 .grid-cell {
@@ -71,4 +73,30 @@
   flex-shrink: 0;
   height: 100%;
   border-right: 1px solid #e5e5e5;
+  position: relative;
+  z-index: 1;
+}
+
+.left-row {
+  &.row-hovered {
+    background: #fafbfd;
+  }
+}
+
+.grid-row {
+  &.row-hovered {
+    background: #eef0ff;
+  }
+}
+
+.ghost-box {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  width: 150px;
+  border: 1px solid rgba(195, 199, 255, 1);
+  border-radius: 8px;
+  background: #dddfff;
+  pointer-events: none;
+  z-index: 2;
 }
