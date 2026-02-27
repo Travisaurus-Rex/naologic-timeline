@@ -17,5 +17,26 @@ export class Timeline {
     { docId: '5', data: { name: 'Packaging Line' } },
   ];
 
+  workOrders = [
+    {
+      docId: 'wo1',
+      data: {
+        workCenterId: '1',
+        dayIndex: 1, // Tue
+        duration: 2, // spans 2 columns
+        label: 'WO-1001',
+      },
+    },
+    {
+      docId: 'wo2',
+      data: {
+        workCenterId: '3',
+        dayIndex: 3, // Thu
+        duration: 1,
+        label: 'WO-2045',
+      },
+    },
+  ];
+
   columns = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 }

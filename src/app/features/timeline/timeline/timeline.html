@@ -1,33 +1,39 @@
-<div class="timeline-container">
+<div class="page-wrapper">
   <app-timeline-header></app-timeline-header>
 
-  <div class="timeline-body">
-    <!-- Left Fixed Column -->
-    <div class="timeline-left">
-      <div class="timeline-row header-cell">Work Center</div>
-
-      <div class="timeline-row" *ngFor="let wc of workCenters">
-        {{ wc.data.name }}
-      </div>
+  <div class="grid-container">
+    <div class="left-panel">
+      <div class="left-header">Work Center</div>
+      @for (wc of workCenters; track wc.docId) {
+        <div class="left-row">{{ wc.data.name }}</div>
+      }
     </div>
 
-    <!-- Right Scrollable Grid -->
-    <div class="timeline-right">
-      <div class="timeline-grid">
-        <!-- Header row -->
-        <div class="timeline-row header-row">
-          <div class="time-cell" *ngFor="let col of columns">
-            {{ col }}
-          </div>
-        </div>
-
-        <!-- Work center rows -->
-        <div class="timeline-row" *ngFor="let wc of workCenters">
-          <div class="grid-row">
-            <!-- bars will go here later -->
-          </div>
-        </div>
+    <div class="right-panel">
+      <div class="header-row">
+        @for (col of columns; track col) {
+          <div class="col-header">{{ col }}</div>
+        }
       </div>
+      @for (wc of workCenters; track wc.docId) {
+        <div class="grid-row">
+          @for (col of columns; track col) {
+            <div class="grid-cell"></div>
+          }
+          @for (order of workOrders; track order.docId) {
+            @if (order.data.workCenterId === wc.docId) {
+              <div
+                class="work-order-bar"
+                [style.left.px]="order.data.dayIndex * 150"
+                [style.width.px]="order.data.duration * 150"
+              >
+                <span class="bar-label">{{ order.data.label }}</span>
+                <span class="bar-status">Complete</span>
+              </div>
+            }
+          }
+        </div>
+      }
     </div>
   </div>
 </div>
