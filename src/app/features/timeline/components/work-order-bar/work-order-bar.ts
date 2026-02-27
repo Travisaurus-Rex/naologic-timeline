@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Pill } from '../../../../core/components/pill/pill';
 import { WorkOrderDocument } from '../../../../models/work-order';
 import { NgStyle } from '@angular/common';
-import { BarStylePipe } from '../../../../core/pipes/status-style-pipe';
+import { BarStylePipe } from '../../../../core/pipes/status-style';
 
 @Component({
   selector: 'app-work-order-bar',
