@@ -27,6 +27,7 @@ export class WorkOrderBar {
   @Input() left!: number;
   @Input() width!: number;
   @Output() deleted = new EventEmitter<WorkOrderDocument>();
+  @Output() edited = new EventEmitter<WorkOrderDocument>();
   @ViewChild('dropdownTemplate') dropdownTemplate!: TemplateRef<any>;
 
   private overlay = inject(Overlay);
@@ -36,6 +37,12 @@ export class WorkOrderBar {
   onDelete() {
     this.overlayRef?.dispose();
     this.deleted.emit(this.order);
+  }
+
+  onEdit() {
+    this.overlayRef?.dispose();
+    this.overlayRef = null;
+    this.edited.emit(this.order);
   }
 
   toggleMenu(event: MouseEvent) {

@@ -1,1 +1,53 @@
-<p>work-order-panel works!</p>
+<div class="overlay" (click)="closed.emit()"></div>
+
+<div class="panel">
+  <div class="panel-header">
+    <div class="header-text">
+      <span class="header-title">Work Order Details</span>
+      <span class="header-subtitle">Specify the dates, names, and status for this order</span>
+    </div>
+    <div class="header-actions">
+      <button class="btn-cancel" (click)="closed.emit()">Cancel</button>
+      <button class="btn-primary" (click)="onSave()">{{ isEdit ? 'Save' : 'Create' }}</button>
+    </div>
+  </div>
+
+  <div class="panel-body" [formGroup]="form">
+    <div class="field">
+      <label>Work Order Name</label>
+      <input
+        type="text"
+        formControlName="name"
+        [formGroup]="form"
+        placeholder="e.g. Aluminum Housing Batch 42"
+      />
+    </div>
+
+    <ng-select
+      class="custom"
+      [formControl]="form.controls.status"
+      [clearable]="false"
+      [searchable]="false"
+    >
+      <ng-template ng-label-tmp let-item="item">
+        <app-pill [status]="item"></app-pill>
+      </ng-template>
+      <ng-template ng-option-tmp let-item="item">
+        {{ item | statusLabel }}
+      </ng-template>
+      @for (status of statuses; track status) {
+        <ng-option [value]="status">{{ status | statusLabel }}</ng-option>
+      }
+    </ng-select>
+
+    <div class="field">
+      <label>Start Date</label>
+      <input type="date" formControlName="startDate" [formGroup]="form" />
+    </div>
+
+    <div class="field">
+      <label>End Date</label>
+      <input type="date" formControlName="endDate" [formGroup]="form" />
+    </div>
+  </div>
+</div>

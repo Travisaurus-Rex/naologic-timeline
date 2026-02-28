@@ -27,8 +27,9 @@
           class="grid-row"
           [class.row-hovered]="hoveredWorkCenterId() === wc.docId"
           (mouseenter)="hoveredWorkCenterId.set(wc.docId)"
-          (mouseleave)="hoveredWorkCenterId.set(null)"
+          (mouseleave)="onGridMouseLeave()"
           (mousemove)="onGridMouseMove($event, wc.docId)"
+          (click)="onGridClick()"
         >
           @for (col of columns(); track col.getTime()) {
             <div class="grid-cell"></div>
@@ -44,6 +45,7 @@
                 [order]="pos.order"
                 [left]="pos.left"
                 [width]="pos.width"
+                (edited)="onEditOrder($event)"
                 (deleted)="deleteOrder($event)"
               ></app-work-order-bar>
             }
@@ -53,3 +55,11 @@
     </div>
   </div>
 </div>
+@if (panelOpen()) {
+  <app-work-order-panel
+    [mode]="panelMode()"
+    [order]="selectedOrder()"
+    (closed)="panelOpen.set(false)"
+    (saved)="onPanelSaved($event)"
+  ></app-work-order-panel>
+}

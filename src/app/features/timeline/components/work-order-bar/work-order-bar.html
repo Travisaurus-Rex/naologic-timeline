@@ -14,7 +14,7 @@
 </div>
 <ng-template #dropdownTemplate>
   <div class="dropdown">
-    <button class="dropdown-item">Edit</button>
+    <button class="dropdown-item" (click)="onEdit()">Edit</button>
     <button class="dropdown-item delete" (click)="onDelete()">Delete</button>
   </div>
 </ng-template>

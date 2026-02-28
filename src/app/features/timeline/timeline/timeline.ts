@@ -7,10 +7,11 @@ import { computed, signal } from '@angular/core';
 import { addDays, differenceInDays, subDays } from 'date-fns';
 import { ColHeaderPipe } from '../../../core/pipes/column-header';
 import { WorkOrderDocument } from '../../../models/work-order';
+import { WorkOrderPanel } from '../components/work-order-panel/work-order-panel';
 
 @Component({
   selector: 'app-timeline',
-  imports: [CommonModule, TimelineHeader, WorkOrderBar, ColHeaderPipe],
+  imports: [CommonModule, TimelineHeader, WorkOrderBar, ColHeaderPipe, WorkOrderPanel],
   templateUrl: './timeline.html',
   styleUrl: './timeline.scss',
 })
@@ -62,6 +63,25 @@ export class Timeline {
   hoveredDate = signal<Date | null>(null);
 
   ghostLeft = signal<number>(-9999);
+
+  panelOpen = signal(false);
+  panelMode = signal<'create' | 'edit'>('create');
+  selectedOrder = signal<WorkOrderDocument | null>(null);
+
+  onGridClick() {
+    this.panelMode.set('create');
+    this.panelOpen.set(true);
+  }
+
+  onEditOrder(order: WorkOrderDocument) {
+    this.selectedOrder.set(order);
+    this.panelMode.set('edit');
+    this.panelOpen.set(true);
+  }
+
+  onPanelSaved(data: any) {
+    this.panelOpen.set(false);
+  }
 
   onGridMouseLeave() {
     this.hoveredDate.set(null);
