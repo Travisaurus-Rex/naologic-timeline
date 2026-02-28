@@ -41,27 +41,13 @@
     </ng-select>
 
     <div class="field">
-      <label>Start Date</label>
-      <input
-        ngbDatepicker
-        #startPicker="ngbDatepicker"
-        [formControl]="form.controls.startDate"
-        (click)="startPicker.toggle()"
-        placeholder="MM/DD/YYYY"
-        readonly
-      />
+      <label>End Date</label>
+      <input type="date" formControlName="endDate" />
     </div>
 
     <div class="field">
-      <label>End Date</label>
-      <input
-        ngbDatepicker
-        #endPicker="ngbDatepicker"
-        [formControl]="form.controls.endDate"
-        (click)="endPicker.toggle()"
-        placeholder="MM/DD/YYYY"
-        readonly
-      />
+      <label>Start Date</label>
+      <input type="date" formControlName="startDate" />
     </div>
   </div>
 </div>
