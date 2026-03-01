@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, SimpleChanges, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Pill } from '../../../../core/components/pill/pill';
@@ -13,7 +13,7 @@ import { StatusLabelPipe } from '../../../../core/pipes/status-label';
   templateUrl: './work-order-panel.html',
   styleUrl: './work-order-panel.scss',
 })
-export class WorkOrderPanel {
+export class WorkOrderPanel implements OnChanges {
   @Input() mode: 'create' | 'edit' = 'create';
   @Input() order: WorkOrderDocument | null = null;
   @Output() closed = new EventEmitter<void>();
@@ -27,6 +27,26 @@ export class WorkOrderPanel {
     startDate: new FormControl('', Validators.required),
     endDate: new FormControl('', Validators.required),
   });
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['order'] && this.order) {
+      this.form.patchValue({
+        name: this.order.data.name,
+        status: this.order.data.status,
+        startDate: this.order.data.startDate,
+        endDate: this.order.data.endDate,
+      });
+    }
+
+    if (changes['mode'] && this.mode === 'create') {
+      this.form.reset({
+        name: '',
+        status: 'open',
+        startDate: '',
+        endDate: '',
+      });
+    }
+  }
 
   get isEdit() {
     return this.mode === 'edit';
