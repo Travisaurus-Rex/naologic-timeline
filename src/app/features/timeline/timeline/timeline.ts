@@ -136,13 +136,12 @@ export class Timeline {
     const scrollLeft: number = container.scrollLeft;
 
     const xForDate: number = event.clientX - panelRect.left + scrollLeft;
-    const ghostWidth = this.pxPerDay();
-    const xForGhost: number = xForDate - ghostWidth / 2;
-
-    const maxLeft: number = (this.columns().length - 1) * this.columnWidth();
-    const clampedX: number = Math.max(0, Math.min(xForGhost, maxLeft));
 
     const days: number = Math.floor(xForDate / this.pxPerDay());
+    const snappedX: number = days * this.pxPerDay();
+    const maxLeft: number = (this.columns().length - 1) * this.columnWidth();
+    const clampedX: number = Math.max(0, Math.min(snappedX, maxLeft));
+
     const hovered: Date = addDays(this.timelineStart(), days);
 
     const isOverOrder: boolean = this.workOrders().some(
