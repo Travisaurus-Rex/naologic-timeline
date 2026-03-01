@@ -29,7 +29,7 @@
           (mouseenter)="hoveredWorkCenterId.set(wc.docId)"
           (mouseleave)="onGridMouseLeave()"
           (mousemove)="onGridMouseMove($event, wc.docId)"
-          (click)="onGridClick()"
+          (click)="onGridClick(wc.docId)"
         >
           @for (col of columns(); track col.getTime()) {
             <div class="grid-cell"></div>

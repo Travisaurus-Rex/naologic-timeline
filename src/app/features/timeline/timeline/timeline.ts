@@ -1,13 +1,20 @@
-import { Component } from '@angular/core';
-import { TimelineHeader } from '../components/timeline-header/timeline-header';
+import { Component, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { addDays } from 'date-fns';
+
+import { TimelineHeader } from '../components/timeline-header/timeline-header';
 import { WorkOrderBar } from '../components/work-order-bar/work-order-bar';
-import { WORK_CENTERS, WORK_ORDERS } from '../../../data/data';
-import { computed, signal } from '@angular/core';
-import { addDays, differenceInDays, subDays } from 'date-fns';
-import { ColHeaderPipe } from '../../../core/pipes/column-header';
-import { WorkOrderDocument } from '../../../models/work-order';
 import { WorkOrderPanel } from '../components/work-order-panel/work-order-panel';
+
+import { WORK_CENTERS, WORK_ORDERS } from '../../../data/data';
+import { ColHeaderPipe } from '../../../core/pipes/column-header';
+import { WorkOrderData, WorkOrderDocument } from '../../../models/work-order';
+import {
+  buildColumns,
+  calculateBarPositions,
+  calculateTimelineEnd,
+  calculateTimelineStart,
+} from '../utils/timeline.utils';
 
 @Component({
   selector: 'app-timeline',
@@ -16,81 +23,94 @@ import { WorkOrderPanel } from '../components/work-order-panel/work-order-panel'
   styleUrl: './timeline.scss',
 })
 export class Timeline {
+  // ===== DATA =====
+
   workCenters = WORK_CENTERS;
   workOrders = signal<WorkOrderDocument[]>(WORK_ORDERS);
 
+  // ===== CONFIG =====
+
   columnWidth = signal(150);
 
-  timelineStart = computed(() => {
-    const dates = this.workOrders().map((o) => new Date(o.data.startDate));
-    const earliest = dates.length
-      ? new Date(Math.min(...dates.map((d) => d.getTime())))
-      : new Date();
-    return subDays(earliest, 3);
-  });
+  // ===== DERIVED TIMELINE =====
 
-  timelineEnd = computed(() => {
-    const dates = this.workOrders().map((o) => new Date(o.data.endDate));
-    const latest = dates.length
-      ? new Date(Math.max(...dates.map((d) => d.getTime())))
-      : addDays(new Date(), 60);
-    return addDays(latest, 3);
-  });
+  timelineStart = computed(() => calculateTimelineStart(this.workOrders()));
 
-  columns = computed(() => {
-    const days = [];
-    const current = new Date(this.timelineStart());
-    while (current <= this.timelineEnd()) {
-      days.push(new Date(current));
-      current.setDate(current.getDate() + 1);
-    }
-    return days;
-  });
+  timelineEnd = computed(() => calculateTimelineEnd(this.workOrders()));
 
-  barPositions = computed(() => {
-    return this.workOrders().map((order: WorkOrderDocument) => ({
-      order,
-      left:
-        differenceInDays(new Date(order.data.startDate), this.timelineStart()) * this.columnWidth(),
-      width:
-        differenceInDays(new Date(order.data.endDate), new Date(order.data.startDate)) *
-        this.columnWidth(),
-    }));
-  });
+  columns = computed(() => buildColumns(this.timelineStart(), this.timelineEnd()));
+
+  barPositions = computed(() =>
+    calculateBarPositions(this.workOrders(), this.timelineStart(), this.columnWidth()),
+  );
+
+  // ===== INTERACTION STATE =====
 
   hoveredWorkCenterId = signal<string | null>(null);
-
   hoveredDate = signal<Date | null>(null);
-
   ghostLeft = signal<number>(-9999);
+
+  // ===== PANEL STATE =====
 
   panelOpen = signal(false);
   panelMode = signal<'create' | 'edit'>('create');
   selectedOrder = signal<WorkOrderDocument | null>(null);
 
-  onGridClick() {
+  activeWorkCenterId: string | null = null;
+
+  // ===== INTERACTION HANDLERS =====
+
+  onGridClick(workCenterId: string): void {
+    this.activeWorkCenterId = workCenterId;
+    this.selectedOrder.set(null);
     this.panelMode.set('create');
     this.panelOpen.set(true);
   }
 
-  onEditOrder(order: WorkOrderDocument) {
+  onEditOrder(order: WorkOrderDocument): void {
+    this.activeWorkCenterId = order.data.workCenterId;
     this.selectedOrder.set(order);
     this.panelMode.set('edit');
     this.panelOpen.set(true);
   }
 
-  onPanelSaved(data: any) {
+  onPanelSaved(data: Omit<WorkOrderData, 'workCenterId'>): void {
+    const workCenterId = this.activeWorkCenterId;
+    if (!workCenterId) return;
+
+    const fullData: WorkOrderData = {
+      ...data,
+      workCenterId,
+    };
+
+    if (this.panelMode() === 'edit' && this.selectedOrder()) {
+      this.updateOrder({
+        ...this.selectedOrder()!,
+        data: fullData,
+      });
+    } else {
+      this.createOrder({
+        docId: crypto.randomUUID(),
+        docType: 'workOrder',
+        data: fullData,
+      });
+    }
+
     this.panelOpen.set(false);
+    this.selectedOrder.set(null);
+    this.activeWorkCenterId = null;
   }
 
   onGridMouseLeave() {
     this.hoveredDate.set(null);
   }
 
-  onGridMouseMove(event: MouseEvent, workCenterId: string) {
+  onGridMouseMove(event: MouseEvent, workCenterId: string): void {
     const rightPanel = event.currentTarget as HTMLElement;
-    const panelRect = rightPanel.closest('.right-panel')!.getBoundingClientRect();
-    const scrollLeft = rightPanel.closest('.right-panel')!.scrollLeft;
+    const container = rightPanel.closest('.right-panel') as HTMLElement;
+
+    const panelRect = container.getBoundingClientRect();
+    const scrollLeft = container.scrollLeft;
 
     const xForDate = event.clientX - panelRect.left + scrollLeft;
     const xForGhost = xForDate - 75;
@@ -115,5 +135,17 @@ export class Timeline {
 
   deleteOrder(order: WorkOrderDocument) {
     this.workOrders.update((orders) => orders.filter((o) => o.docId !== order.docId));
+  }
+
+  // ===== CRUD =====
+
+  private createOrder(order: WorkOrderDocument): void {
+    this.workOrders.update((orders) => [...orders, order]);
+  }
+
+  private updateOrder(updated: WorkOrderDocument): void {
+    this.workOrders.update((orders) =>
+      orders.map((o) => (o.docId === updated.docId ? updated : o)),
+    );
   }
 }

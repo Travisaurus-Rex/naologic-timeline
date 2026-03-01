@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, SimpleChanges, OnChanges } from
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Pill } from '../../../../core/components/pill/pill';
-import { WorkOrderDocument, WorkOrderStatus } from '../../../../models/work-order';
+import { WorkOrderData, WorkOrderDocument, WorkOrderStatus } from '../../../../models/work-order';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { StatusLabelPipe } from '../../../../core/pipes/status-label';
 
@@ -17,19 +17,22 @@ export class WorkOrderPanel implements OnChanges {
   @Input() mode: 'create' | 'edit' = 'create';
   @Input() order: WorkOrderDocument | null = null;
   @Output() closed = new EventEmitter<void>();
-  @Output() saved = new EventEmitter<any>();
+  @Output() saved = new EventEmitter<Omit<WorkOrderData, 'workCenterId'>>();
 
   statuses: WorkOrderStatus[] = ['open', 'in-progress', 'complete', 'blocked'];
 
   form = new FormGroup({
-    name: new FormControl('', Validators.required),
-    status: new FormControl<WorkOrderStatus>('open', Validators.required),
-    startDate: new FormControl('', Validators.required),
-    endDate: new FormControl('', Validators.required),
+    name: new FormControl('', { nonNullable: true, validators: Validators.required }),
+    status: new FormControl<WorkOrderStatus>('open', {
+      nonNullable: true,
+      validators: Validators.required,
+    }),
+    startDate: new FormControl('', { nonNullable: true, validators: Validators.required }),
+    endDate: new FormControl('', { nonNullable: true, validators: Validators.required }),
   });
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['order'] && this.order) {
+  ngOnChanges() {
+    if (this.mode === 'edit' && this.order) {
       this.form.patchValue({
         name: this.order.data.name,
         status: this.order.data.status,
@@ -38,7 +41,7 @@ export class WorkOrderPanel implements OnChanges {
       });
     }
 
-    if (changes['mode'] && this.mode === 'create') {
+    if (this.mode === 'create') {
       this.form.reset({
         name: '',
         status: 'open',
@@ -54,12 +57,7 @@ export class WorkOrderPanel implements OnChanges {
 
   onSave() {
     if (this.form.invalid) return;
-    const val = this.form.value;
-    this.saved.emit({
-      name: val.name,
-      status: val.status,
-      startDate: val.startDate,
-      endDate: val.endDate,
-    });
+    const val = this.form.getRawValue();
+    this.saved.emit(val);
   }
 }
