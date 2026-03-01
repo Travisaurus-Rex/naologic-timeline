@@ -8,9 +8,10 @@ body {
 .ng-select.custom .ng-select-container {
   height: 40px;
   border-radius: 6px;
-  border: 1px solid #e5e5e5;
+  border: 1px solid #e5e5e5 !important;
   padding: 0 12px;
   cursor: pointer;
+  box-shadow: none !important;
 }
 
 .ng-select.custom.ng-select-focused .ng-select-container {
@@ -34,20 +35,60 @@ body {
 
 .ng-select.custom .ng-option.ng-option-marked {
   background: #eceeff;
-  color: #3e4bff;
-}
-
-.ng-select.custom .ng-select-container {
-  height: 40px;
-  border-radius: 6px;
-  border: 1px solid #e5e5e5 !important;
-  padding: 0 12px;
-  cursor: pointer;
-  box-shadow: none !important;
+  color: #3e40db;
 }
 
 .ng-select.custom .ng-value-container {
   display: flex;
   align-items: center;
   padding: 0;
+}
+
+.ng-select.timescale-select .ng-select-container {
+  background: white !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 6px 6px 0 !important;
+  min-height: unset !important;
+  height: 36px;
+  width: 80px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+}
+
+.ng-select.timescale-select .ng-value-container {
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.ng-select.timescale-select .ng-value-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #3e40db;
+  text-transform: capitalize;
+}
+
+.ng-select.timescale-select .ng-dropdown-panel {
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-top: 4px;
+  background: white;
+  min-width: 80px;
+  width: auto !important;
+}
+
+.ng-select.timescale-select .ng-option {
+  font-size: 14px;
+  color: #1a1a2e;
+  padding: 10px 12px;
+  text-transform: capitalize;
+}
+
+.ng-select.timescale-select .ng-option.ng-option-marked {
+  background: #eceeff;
+  color: #3e40db;
 }
