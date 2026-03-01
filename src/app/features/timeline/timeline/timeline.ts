@@ -30,18 +30,41 @@ export class Timeline {
 
   // ===== CONFIG =====
 
-  columnWidth = signal(150);
+  timescale = signal<'day' | 'week' | 'month'>('day');
+
+  columnWidth = computed(() => {
+    switch (this.timescale()) {
+      case 'day':
+        return 150;
+      case 'week':
+        return 400;
+      case 'month':
+        return 800;
+    }
+  });
 
   // ===== DERIVED TIMELINE =====
+  timelineStart = computed(() => calculateTimelineStart(this.workOrders(), this.timescale()));
 
-  timelineStart = computed(() => calculateTimelineStart(this.workOrders()));
+  timelineEnd = computed<Date>(() => calculateTimelineEnd(this.workOrders(), this.timescale()));
 
-  timelineEnd = computed(() => calculateTimelineEnd(this.workOrders()));
+  columns = computed<Date[]>(() =>
+    buildColumns(this.timelineStart(), this.timelineEnd(), this.timescale()),
+  );
 
-  columns = computed(() => buildColumns(this.timelineStart(), this.timelineEnd()));
+  pxPerDay = computed(() => {
+    switch (this.timescale()) {
+      case 'day':
+        return this.columnWidth();
+      case 'week':
+        return this.columnWidth() / 7;
+      case 'month':
+        return this.columnWidth() / 30;
+    }
+  });
 
   barPositions = computed(() =>
-    calculateBarPositions(this.workOrders(), this.timelineStart(), this.columnWidth()),
+    calculateBarPositions(this.workOrders(), this.timelineStart(), this.pxPerDay()),
   );
 
   // ===== INTERACTION STATE =====
@@ -52,7 +75,7 @@ export class Timeline {
 
   // ===== PANEL STATE =====
 
-  panelOpen = signal(false);
+  panelOpen = signal<boolean>(false);
   panelMode = signal<'create' | 'edit'>('create');
   selectedOrder = signal<WorkOrderDocument | null>(null);
 
@@ -75,7 +98,7 @@ export class Timeline {
   }
 
   onPanelSaved(data: Omit<WorkOrderData, 'workCenterId'>): void {
-    const workCenterId = this.activeWorkCenterId;
+    const workCenterId: string | null = this.activeWorkCenterId;
     if (!workCenterId) return;
 
     const fullData: WorkOrderData = {
@@ -101,7 +124,7 @@ export class Timeline {
     this.activeWorkCenterId = null;
   }
 
-  onGridMouseLeave() {
+  onGridMouseLeave(): void {
     this.hoveredDate.set(null);
   }
 
@@ -109,20 +132,21 @@ export class Timeline {
     const rightPanel = event.currentTarget as HTMLElement;
     const container = rightPanel.closest('.right-panel') as HTMLElement;
 
-    const panelRect = container.getBoundingClientRect();
-    const scrollLeft = container.scrollLeft;
+    const panelRect: DOMRect = container.getBoundingClientRect();
+    const scrollLeft: number = container.scrollLeft;
 
-    const xForDate = event.clientX - panelRect.left + scrollLeft;
-    const xForGhost = xForDate - 75;
+    const xForDate: number = event.clientX - panelRect.left + scrollLeft;
+    const ghostWidth = this.pxPerDay();
+    const xForGhost: number = xForDate - ghostWidth / 2;
 
-    const maxLeft = (this.columns().length - 1) * this.columnWidth();
-    const clampedX = Math.max(0, Math.min(xForGhost, maxLeft));
+    const maxLeft: number = (this.columns().length - 1) * this.columnWidth();
+    const clampedX: number = Math.max(0, Math.min(xForGhost, maxLeft));
 
-    const days = Math.floor(xForDate / this.columnWidth());
-    const hovered = addDays(this.timelineStart(), days);
+    const days: number = Math.floor(xForDate / this.pxPerDay());
+    const hovered: Date = addDays(this.timelineStart(), days);
 
-    const isOverOrder = this.workOrders().some(
-      (o) =>
+    const isOverOrder: boolean = this.workOrders().some(
+      (o: WorkOrderDocument) =>
         o.data.workCenterId === workCenterId &&
         hovered >= new Date(o.data.startDate) &&
         hovered <= new Date(o.data.endDate),
@@ -133,19 +157,21 @@ export class Timeline {
     this.hoveredWorkCenterId.set(workCenterId);
   }
 
-  deleteOrder(order: WorkOrderDocument) {
-    this.workOrders.update((orders) => orders.filter((o) => o.docId !== order.docId));
+  deleteOrder(order: WorkOrderDocument): void {
+    this.workOrders.update((orders: WorkOrderDocument[]) =>
+      orders.filter((o: WorkOrderDocument) => o.docId !== order.docId),
+    );
   }
 
   // ===== CRUD =====
 
   private createOrder(order: WorkOrderDocument): void {
-    this.workOrders.update((orders) => [...orders, order]);
+    this.workOrders.update((orders: WorkOrderDocument[]) => [...orders, order]);
   }
 
   private updateOrder(updated: WorkOrderDocument): void {
-    this.workOrders.update((orders) =>
-      orders.map((o) => (o.docId === updated.docId ? updated : o)),
+    this.workOrders.update((orders: WorkOrderDocument[]) =>
+      orders.map((o: WorkOrderDocument) => (o.docId === updated.docId ? updated : o)),
     );
   }
 }

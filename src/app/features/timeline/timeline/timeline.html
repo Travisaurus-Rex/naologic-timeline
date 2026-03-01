@@ -1,5 +1,5 @@
 <div class="page-wrapper">
-  <app-timeline-header></app-timeline-header>
+  <app-timeline-header (timescaleChange)="timescale.set($event)"></app-timeline-header>
 
   <div class="grid-container">
     <div class="left-panel">
@@ -19,7 +19,9 @@
     <div class="right-panel">
       <div class="header-row">
         @for (col of columns(); track col.getTime()) {
-          <div class="col-header">{{ col | colHeader }}</div>
+          <div class="col-header" [style.min-width.px]="columnWidth()">
+            {{ col | colHeader: timescale() }}
+          </div>
         }
       </div>
       @for (wc of workCenters; track wc.docId) {
@@ -32,11 +34,15 @@
           (click)="onGridClick(wc.docId)"
         >
           @for (col of columns(); track col.getTime()) {
-            <div class="grid-cell"></div>
+            <div class="grid-cell" [style.min-width.px]="columnWidth()"></div>
           }
 
           @if (hoveredWorkCenterId() === wc.docId && hoveredDate()) {
-            <div class="ghost-box" [style.left.px]="ghostLeft()"></div>
+            <div
+              class="ghost-box"
+              [style.left.px]="ghostLeft()"
+              [style.width.px]="pxPerDay()"
+            ></div>
           }
 
           @for (pos of barPositions(); track pos.order.docId) {

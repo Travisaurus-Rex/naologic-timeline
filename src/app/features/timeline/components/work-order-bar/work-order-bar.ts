@@ -30,6 +30,10 @@ export class WorkOrderBar {
   @Output() edited = new EventEmitter<WorkOrderDocument>();
   @ViewChild('dropdownTemplate') dropdownTemplate!: TemplateRef<any>;
 
+  constructor() {
+    console.log(this.width);
+  }
+
   private overlay = inject(Overlay);
   private vcr = inject(ViewContainerRef);
   private overlayRef: OverlayRef | null = null;
