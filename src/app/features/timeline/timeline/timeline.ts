@@ -131,28 +131,71 @@ export class Timeline {
   onGridMouseMove(event: MouseEvent, workCenterId: string): void {
     const rightPanel = event.currentTarget as HTMLElement;
     const container = rightPanel.closest('.right-panel') as HTMLElement;
+    if (!container) return;
 
-    const panelRect: DOMRect = container.getBoundingClientRect();
-    const scrollLeft: number = container.scrollLeft;
+    const panelRect = container.getBoundingClientRect();
+    const scrollLeft = container.scrollLeft;
+    const xInContent = event.clientX - panelRect.left + scrollLeft;
 
-    const xForDate: number = event.clientX - panelRect.left + scrollLeft;
+    const cols = this.columns(); // Date[]
+    const colWidth = this.columnWidth();
 
-    const days: number = Math.floor(xForDate / this.pxPerDay());
-    const snappedX: number = days * this.pxPerDay();
-    const maxLeft: number = (this.columns().length - 1) * this.columnWidth();
-    const clampedX: number = Math.max(0, Math.min(snappedX, maxLeft));
+    let accumulatedWidth = 0;
+    let hoveredColIndex = -1;
 
-    const hovered: Date = addDays(this.timelineStart(), days);
+    // find which column the mouse is over
+    for (let i = 0; i < cols.length; i++) {
+      const colStartX = accumulatedWidth;
+      const colEndX = accumulatedWidth + colWidth;
 
-    const isOverOrder: boolean = this.workOrders().some(
-      (o: WorkOrderDocument) =>
+      if (xInContent >= colStartX && xInContent < colEndX) {
+        hoveredColIndex = i;
+        break;
+      }
+
+      accumulatedWidth += colWidth;
+    }
+
+    if (hoveredColIndex === -1) {
+      this.hoveredDate.set(null);
+      this.ghostLeft.set(-9999);
+      return;
+    }
+
+    // determine number of days this column spans
+    let colStart = cols[hoveredColIndex];
+    let colEnd: Date;
+
+    if (this.timescale() === 'day') {
+      colEnd = colStart;
+    } else if (this.timescale() === 'week') {
+      colEnd = addDays(colStart, 6);
+    } else if (this.timescale() === 'month') {
+      const year = colStart.getFullYear();
+      const month = colStart.getMonth();
+      colEnd = new Date(year, month + 1, 0); // last day of month
+    } else {
+      colEnd = colStart;
+    }
+
+    const daysInCol =
+      Math.ceil((colEnd.getTime() - colStart.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    const dayWidth = colWidth / daysInCol;
+
+    // determine which day the mouse is over inside the column
+    const xInCol = xInContent - accumulatedWidth;
+    const dayIndex = Math.floor(xInCol / dayWidth);
+    const hoveredDate = addDays(colStart, dayIndex);
+
+    const isOverOrder = this.workOrders().some(
+      (o) =>
         o.data.workCenterId === workCenterId &&
-        hovered >= new Date(o.data.startDate) &&
-        hovered <= new Date(o.data.endDate),
+        hoveredDate >= new Date(o.data.startDate) &&
+        hoveredDate <= new Date(o.data.endDate),
     );
 
-    this.hoveredDate.set(isOverOrder ? null : hovered);
-    this.ghostLeft.set(isOverOrder ? -9999 : clampedX);
+    this.hoveredDate.set(isOverOrder ? null : hoveredDate);
+    this.ghostLeft.set(isOverOrder ? -9999 : accumulatedWidth + dayIndex * dayWidth);
     this.hoveredWorkCenterId.set(workCenterId);
   }
 
