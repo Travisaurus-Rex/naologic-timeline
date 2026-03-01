@@ -45,6 +45,7 @@
                 [order]="pos.order"
                 [left]="pos.left"
                 [width]="pos.width"
+                (click)="$event.stopPropagation()"
                 (edited)="onEditOrder($event)"
                 (deleted)="deleteOrder($event)"
               ></app-work-order-bar>
