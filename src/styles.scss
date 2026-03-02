@@ -82,6 +82,7 @@ body {
   cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: center;
   padding: 0 8px;
 }
 
@@ -89,6 +90,7 @@ body {
   padding: 0;
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 
 .ng-select.timescale-select .ng-value-label {
@@ -105,7 +107,8 @@ body {
   margin-top: 4px;
   background: white;
   min-width: 80px;
-  width: auto !important;
+  width: 200px !important;
+  transform: translateX(-92px);
 }
 
 .ng-select.timescale-select .ng-option {
@@ -113,6 +116,7 @@ body {
   color: #1a1a2e;
   padding: 10px 12px;
   text-transform: capitalize;
+  font-weight: 600;
 }
 
 .ng-select.timescale-select .ng-option.ng-option-marked {
