@@ -1,4 +1,12 @@
-import { Component, Input, Output, EventEmitter, SimpleChanges, OnChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  SimpleChanges,
+  OnChanges,
+  OnInit,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Pill } from '../../../../core/components/pill/pill';
@@ -13,12 +21,18 @@ import { StatusLabelPipe } from '../../../../core/pipes/status-label';
   templateUrl: './work-order-panel.html',
   styleUrl: './work-order-panel.scss',
 })
-export class WorkOrderPanel implements OnChanges {
+export class WorkOrderPanel implements OnInit, OnChanges {
+  isVisible: boolean = false;
+
   @Input() mode: 'create' | 'edit' = 'create';
   @Input() startDate?: Date;
   @Input() order: WorkOrderDocument | null = null;
   @Output() closed = new EventEmitter<void>();
   @Output() saved = new EventEmitter<Omit<WorkOrderData, 'workCenterId'>>();
+
+  ngOnInit() {
+    requestAnimationFrame(() => (this.isVisible = true));
+  }
 
   statuses: WorkOrderStatus[] = ['open', 'in-progress', 'complete', 'blocked'];
 
@@ -63,6 +77,11 @@ export class WorkOrderPanel implements OnChanges {
     if (this.form.invalid) return;
     const val = this.form.getRawValue();
     this.saved.emit(val);
+  }
+
+  onClose() {
+    this.isVisible = false;
+    setTimeout(() => this.closed.emit(), 300);
   }
 
   toInputDate(date?: Date | string): string {

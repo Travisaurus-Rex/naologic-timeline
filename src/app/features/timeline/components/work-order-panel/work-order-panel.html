@@ -1,13 +1,13 @@
-<div class="overlay" (click)="closed.emit()"></div>
+<div class="overlay" [class.visible]="isVisible" (click)="onClose()"></div>
 
-<div class="panel">
+<div class="panel" [class.visible]="isVisible">
   <div class="panel-header">
     <div class="header-text">
       <span class="header-title">Work Order Details</span>
       <span class="header-subtitle">Specify the dates, names, and status for this order</span>
     </div>
     <div class="header-actions">
-      <button class="btn-cancel" (click)="closed.emit()">Cancel</button>
+      <button class="btn-cancel" (click)="onClose()">Cancel</button>
       <button class="btn-primary" (click)="onSave()">{{ isEdit ? 'Save' : 'Create' }}</button>
     </div>
   </div>
