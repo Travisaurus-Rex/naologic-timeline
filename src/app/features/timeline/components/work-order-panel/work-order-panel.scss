@@ -101,8 +101,11 @@
 
 .error {
   font-weight: 600;
-  color: red;
-  padding: 4px 8px;
+  color: #bb2124;
+  background-color: #f1d3d3;
+  border: 1px solid #c94d50;
+  padding: 6px 12px;
+  border-radius: 5px;
 }
 
 @media screen and (max-width: 768px) {
