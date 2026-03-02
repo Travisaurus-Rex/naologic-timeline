@@ -38,11 +38,9 @@
           }
 
           @if (hoveredWorkCenterId() === wc.docId && hoveredDate()) {
-            <div
-              class="ghost-box"
-              [style.left.px]="ghostLeft()"
-              [style.width.px]="columnWidth()"
-            ></div>
+            <div class="ghost-box" [style.left.px]="ghostLeft()" [style.width.px]="columnWidth()">
+              <div class="ghost-tooltip">Click to add dates</div>
+            </div>
           }
 
           @for (pos of barPositions(); track pos.order.docId) {

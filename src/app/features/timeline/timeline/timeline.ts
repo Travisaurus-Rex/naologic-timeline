@@ -23,6 +23,9 @@ import {
   styleUrl: './timeline.scss',
 })
 export class Timeline {
+  constructor() {
+    console.log(new Date('2026-01-05'));
+  }
   // ===== DATA =====
 
   workCenters = WORK_CENTERS;
@@ -30,7 +33,7 @@ export class Timeline {
 
   // ===== CONFIG =====
 
-  timescale = signal<'day' | 'week' | 'month'>('day');
+  timescale = signal<'day' | 'week' | 'month'>('month');
 
   columnWidth = computed(() => {
     switch (this.timescale()) {
@@ -44,9 +47,9 @@ export class Timeline {
   });
 
   // ===== DERIVED TIMELINE =====
-  timelineStart = computed(() => calculateTimelineStart(this.workOrders(), this.timescale()));
+  timelineStart = computed(() => calculateTimelineStart(this.workOrders()));
 
-  timelineEnd = computed<Date>(() => calculateTimelineEnd(this.workOrders(), this.timescale()));
+  timelineEnd = computed<Date>(() => calculateTimelineEnd(this.workOrders()));
 
   columns = computed<Date[]>(() =>
     buildColumns(this.timelineStart(), this.timelineEnd(), this.timescale()),
@@ -55,9 +58,9 @@ export class Timeline {
   pxPerDay = computed(() => {
     switch (this.timescale()) {
       case 'day':
-        return 150;
+        return 200;
       case 'week':
-        return 120 / 7;
+        return 150 / 7;
       case 'month':
         return 100 / 30;
     }
@@ -140,12 +143,13 @@ export class Timeline {
     const days = Math.floor(xForDate / this.pxPerDay());
     const hovered = addDays(this.timelineStart(), days);
 
-    const isOverOrder = this.workOrders().some(
-      (o) =>
-        o.data.workCenterId === workCenterId &&
-        hovered >= new Date(o.data.startDate) &&
-        hovered <= new Date(o.data.endDate),
-    );
+    const ghostStart = xForDate - this.columnWidth() / 2;
+    const ghostEnd = ghostStart + this.columnWidth();
+
+    const isOverOrder = this.barPositions().some((pos) => {
+      if (pos.order.data.workCenterId !== workCenterId) return false;
+      return ghostEnd > pos.left && ghostStart < pos.left + pos.width;
+    });
 
     this.hoveredDate.set(isOverOrder ? null : hovered);
     this.ghostLeft.set(isOverOrder ? -9999 : clampedX);

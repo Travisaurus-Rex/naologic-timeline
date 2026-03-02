@@ -61,6 +61,7 @@
   justify-content: center;
   font-size: 13px;
   color: #aaa;
+  box-sizing: border-box;
 }
 
 .grid-row {
@@ -77,6 +78,7 @@
   border-right: 1px solid #e5e5e5;
   position: relative;
   z-index: 1;
+  box-sizing: border-box;
 }
 
 .left-row {
@@ -95,10 +97,25 @@
   position: absolute;
   top: 4px;
   bottom: 4px;
-  width: 150px;
   border: 1px solid rgba(195, 199, 255, 1);
   border-radius: 8px;
   background: #dddfff;
   pointer-events: none;
   z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ghost-tooltip {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1a1a2e;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
 }

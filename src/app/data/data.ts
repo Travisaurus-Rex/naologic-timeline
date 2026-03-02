@@ -24,64 +24,225 @@ export const WORK_CENTERS: WorkCenterDocument[] = [
   { docId: 'wc-20', docType: 'workCenter', data: { name: 'Shipping Dock' } },
 ];
 
-const statuses: Array<'open' | 'in-progress' | 'complete' | 'blocked'> = [
-  'open',
-  'in-progress',
-  'complete',
-  'blocked',
+export const WORK_ORDERS: WorkOrderDocument[] = [
+  {
+    docId: 'wo-1',
+    docType: 'workOrder',
+    data: {
+      name: 'Aluminum Housing Batch 42',
+      workCenterId: 'wc-1',
+      status: 'complete',
+      startDate: '2026-01-05',
+      endDate: '2026-03-12',
+    },
+  },
+  {
+    docId: 'wo-2',
+    docType: 'workOrder',
+    data: {
+      name: 'PVC Pipe Run 18',
+      workCenterId: 'wc-1',
+      status: 'in-progress',
+      startDate: '2026-04-01',
+      endDate: '2026-07-20',
+    },
+  },
+  {
+    docId: 'wo-3',
+    docType: 'workOrder',
+    data: {
+      name: 'Gear Shaft Milling',
+      workCenterId: 'wc-2',
+      status: 'open',
+      startDate: '2026-01-15',
+      endDate: '2026-04-10',
+    },
+  },
+  {
+    docId: 'wo-4',
+    docType: 'workOrder',
+    data: {
+      name: 'Precision Bracket Run',
+      workCenterId: 'wc-2',
+      status: 'blocked',
+      startDate: '2026-05-01',
+      endDate: '2026-08-30',
+    },
+  },
+  {
+    docId: 'wo-5',
+    docType: 'workOrder',
+    data: {
+      name: 'Motor Assembly Lot A',
+      workCenterId: 'wc-3',
+      status: 'in-progress',
+      startDate: '2026-02-10',
+      endDate: '2026-05-25',
+    },
+  },
+  {
+    docId: 'wo-6',
+    docType: 'workOrder',
+    data: {
+      name: 'Inspection Cycle 204',
+      workCenterId: 'wc-4',
+      status: 'open',
+      startDate: '2026-01-20',
+      endDate: '2026-03-05',
+    },
+  },
+  {
+    docId: 'wo-7',
+    docType: 'workOrder',
+    data: {
+      name: 'Final QA Audit',
+      workCenterId: 'wc-4',
+      status: 'complete',
+      startDate: '2026-04-15',
+      endDate: '2026-06-30',
+    },
+  },
+  {
+    docId: 'wo-8',
+    docType: 'workOrder',
+    data: {
+      name: 'Retail Packaging Batch 9',
+      workCenterId: 'wc-5',
+      status: 'blocked',
+      startDate: '2026-02-01',
+      endDate: '2026-05-15',
+    },
+  },
+  {
+    docId: 'wo-9',
+    docType: 'workOrder',
+    data: {
+      name: 'Steel Frame Weld 1',
+      workCenterId: 'wc-6',
+      status: 'open',
+      startDate: '2026-01-10',
+      endDate: '2026-04-20',
+    },
+  },
+  {
+    docId: 'wo-10',
+    docType: 'workOrder',
+    data: {
+      name: 'Paint Coat Run 1',
+      workCenterId: 'wc-7',
+      status: 'complete',
+      startDate: '2026-03-01',
+      endDate: '2026-06-15',
+    },
+  },
+  {
+    docId: 'wo-11',
+    docType: 'workOrder',
+    data: {
+      name: 'Stamp Die Cut 1',
+      workCenterId: 'wc-8',
+      status: 'in-progress',
+      startDate: '2026-02-15',
+      endDate: '2026-05-01',
+    },
+  },
+  {
+    docId: 'wo-12',
+    docType: 'workOrder',
+    data: {
+      name: 'Mold Inject Cycle 1',
+      workCenterId: 'wc-9',
+      status: 'blocked',
+      startDate: '2026-01-25',
+      endDate: '2026-04-10',
+    },
+  },
+  {
+    docId: 'wo-13',
+    docType: 'workOrder',
+    data: {
+      name: 'Heat Treat Lot 1',
+      workCenterId: 'wc-10',
+      status: 'open',
+      startDate: '2026-03-10',
+      endDate: '2026-07-05',
+    },
+  },
+  {
+    docId: 'wo-14',
+    docType: 'workOrder',
+    data: {
+      name: 'Laser Cut Sheet 1',
+      workCenterId: 'wc-11',
+      status: 'complete',
+      startDate: '2026-02-20',
+      endDate: '2026-05-30',
+    },
+  },
+  {
+    docId: 'wo-15',
+    docType: 'workOrder',
+    data: {
+      name: 'Surface Grind Run 1',
+      workCenterId: 'wc-12',
+      status: 'in-progress',
+      startDate: '2026-01-15',
+      endDate: '2026-03-25',
+    },
+  },
+  {
+    docId: 'wo-16',
+    docType: 'workOrder',
+    data: {
+      name: 'Anodize Batch 1',
+      workCenterId: 'wc-13',
+      status: 'blocked',
+      startDate: '2026-04-05',
+      endDate: '2026-08-15',
+    },
+  },
+  {
+    docId: 'wo-17',
+    docType: 'workOrder',
+    data: {
+      name: 'PCB Solder Run 1',
+      workCenterId: 'wc-14',
+      status: 'open',
+      startDate: '2026-02-25',
+      endDate: '2026-06-10',
+    },
+  },
+  {
+    docId: 'wo-18',
+    docType: 'workOrder',
+    data: {
+      name: 'Wire Loom Lot 1',
+      workCenterId: 'wc-15',
+      status: 'complete',
+      startDate: '2026-01-30',
+      endDate: '2026-04-15',
+    },
+  },
+  {
+    docId: 'wo-19',
+    docType: 'workOrder',
+    data: {
+      name: 'Hydraulic Press Run 1',
+      workCenterId: 'wc-16',
+      status: 'in-progress',
+      startDate: '2026-03-20',
+      endDate: '2026-07-10',
+    },
+  },
+  {
+    docId: 'wo-20',
+    docType: 'workOrder',
+    data: {
+      name: 'Calibration Cycle 1',
+      workCenterId: 'wc-17',
+      status: 'blocked',
+      startDate: '2026-02-05',
+      endDate: '2026-05-20',
+    },
+  },
 ];
-
-const names = [
-  'Aluminum Housing Batch',
-  'PVC Pipe Run',
-  'Gear Shaft Milling',
-  'Precision Bracket Run',
-  'Motor Assembly Lot',
-  'Inspection Cycle',
-  'Final QA Audit',
-  'Retail Packaging Batch',
-  'Steel Frame Weld',
-  'Paint Coat Run',
-  'Stamp Die Cut',
-  'Mold Inject Cycle',
-  'Heat Treat Lot',
-  'Laser Cut Sheet',
-  'Surface Grind Run',
-  'Anodize Batch',
-  'PCB Solder Run',
-  'Wire Loom Lot',
-  'Hydraulic Press Run',
-  'Calibration Cycle',
-];
-
-const allOrders: WorkOrderDocument[] = [];
-let id = 1;
-
-for (let wc = 1; wc <= 20; wc++) {
-  const numOrders = 3 + Math.floor(Math.random() * 4);
-  let currentDay = Math.floor(Math.random() * 30);
-
-  for (let o = 0; o < numOrders; o++) {
-    const duration = 14 + Math.floor(Math.random() * 166); // 2 weeks to 6 months
-    const gap = 7 + Math.floor(Math.random() * 30);
-    const startDate = new Date(2026, 0, 1 + currentDay);
-    const endDate = new Date(2026, 0, 1 + currentDay + duration);
-
-    allOrders.push({
-      docId: `wo-${id}`,
-      docType: 'workOrder',
-      data: {
-        name: `${names[id % names.length]} ${id}`,
-        workCenterId: `wc-${wc}`,
-        status: statuses[Math.floor(Math.random() * 4)],
-        startDate: startDate.toISOString().split('T')[0],
-        endDate: endDate.toISOString().split('T')[0],
-      },
-    });
-
-    currentDay += duration + gap;
-    id++;
-  }
-}
-
-export const WORK_ORDERS = allOrders;

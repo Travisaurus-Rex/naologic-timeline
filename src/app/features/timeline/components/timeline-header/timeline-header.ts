@@ -17,7 +17,7 @@ export class TimelineHeader {
 
   timescaleOptions: Timescale[] = ['day', 'week', 'month'];
 
-  timescaleControl = new FormControl<Timescale>('day', { nonNullable: true });
+  timescaleControl = new FormControl<Timescale>('month', { nonNullable: true });
 
   constructor() {
     this.timescaleControl.valueChanges.subscribe((value: Timescale) => {
