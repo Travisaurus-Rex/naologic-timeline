@@ -25,3 +25,13 @@
 .btn-today {
   margin-left: 16px;
 }
+
+@media screen and (max-width: 768px) {
+  .timeline-header {
+    padding: 10px 0;
+
+    h2 {
+      margin-top: 0;
+    }
+  }
+}

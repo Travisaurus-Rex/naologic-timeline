@@ -10,3 +10,9 @@
   width: 80px;
   height: 10px;
 }
+
+@media (max-width: 768px) {
+  .app-header {
+    padding: 16px;
+  }
+}

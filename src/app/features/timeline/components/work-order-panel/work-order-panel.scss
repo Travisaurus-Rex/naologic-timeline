@@ -57,6 +57,7 @@
 .header-subtitle {
   font-size: 13px;
   color: #687196;
+  word-wrap: break-word;
 }
 
 .header-actions {
@@ -102,4 +103,10 @@
   font-weight: 600;
   color: red;
   padding: 4px 8px;
+}
+
+@media screen and (max-width: 768px) {
+  .panel {
+    width: 100%;
+  }
 }

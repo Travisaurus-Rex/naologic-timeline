@@ -152,3 +152,29 @@
   min-width: 100px;
   text-align: center;
 }
+
+@media (max-width: 1024px) {
+  .left-panel {
+    width: 180px;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-wrapper {
+    padding: 16px;
+  }
+
+  .left-panel {
+    width: 80px;
+  }
+
+  .left-header,
+  .left-row {
+    padding: 0 8px;
+    font-size: 12px;
+  }
+
+  .today-label {
+    display: none;
+  }
+}
