@@ -15,6 +15,7 @@ import { StatusLabelPipe } from '../../../../core/pipes/status-label';
 })
 export class WorkOrderPanel implements OnChanges {
   @Input() mode: 'create' | 'edit' = 'create';
+  @Input() startDate?: Date;
   @Input() order: WorkOrderDocument | null = null;
   @Output() closed = new EventEmitter<void>();
   @Output() saved = new EventEmitter<Omit<WorkOrderData, 'workCenterId'>>();
@@ -27,7 +28,10 @@ export class WorkOrderPanel implements OnChanges {
       nonNullable: true,
       validators: Validators.required,
     }),
-    startDate: new FormControl('', { nonNullable: true, validators: Validators.required }),
+    startDate: new FormControl(this.toInputDate(this.startDate), {
+      nonNullable: true,
+      validators: Validators.required,
+    }),
     endDate: new FormControl('', { nonNullable: true, validators: Validators.required }),
   });
 
@@ -36,7 +40,7 @@ export class WorkOrderPanel implements OnChanges {
       this.form.patchValue({
         name: this.order.data.name,
         status: this.order.data.status,
-        startDate: this.order.data.startDate,
+        startDate: this.toInputDate(this.order.data.startDate),
         endDate: this.order.data.endDate,
       });
     }
@@ -45,7 +49,7 @@ export class WorkOrderPanel implements OnChanges {
       this.form.reset({
         name: '',
         status: 'open',
-        startDate: '',
+        startDate: this.toInputDate(this.startDate),
         endDate: '',
       });
     }
@@ -59,5 +63,10 @@ export class WorkOrderPanel implements OnChanges {
     if (this.form.invalid) return;
     const val = this.form.getRawValue();
     this.saved.emit(val);
+  }
+
+  toInputDate(date?: Date | string): string {
+    if (!date) return '';
+    return new Date(date).toISOString().split('T')[0];
   }
 }

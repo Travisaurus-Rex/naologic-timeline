@@ -112,11 +112,13 @@ export class Timeline {
   selectedOrder = signal<WorkOrderDocument | null>(null);
 
   activeWorkCenterId: string | null = null;
+  createOrderStartDate?: Date;
 
   // ===== INTERACTION HANDLERS =====
 
-  onGridClick(workCenterId: string): void {
+  onGridClick(workCenterId: string, startDate: Date | null): void {
     this.activeWorkCenterId = workCenterId;
+    this.createOrderStartDate = startDate || undefined;
     this.selectedOrder.set(null);
     this.panelMode.set('create');
     this.panelOpen.set(true);
