@@ -15,6 +15,15 @@
   }
 }
 
+.bar-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+
 .bar-right {
   display: flex;
   align-items: center;
@@ -123,25 +132,22 @@
   gap: 8px;
 }
 
-.btn-cancel {
-  height: 36px;
-  padding: 0 16px;
-  border-radius: 6px;
-  border: 1px solid #e5e5e5;
-  background: white;
-  cursor: pointer;
-  font-size: 14px;
-  color: #1a1a2e;
-}
-
 .btn-delete {
   height: 36px;
   padding: 0 16px;
   border-radius: 6px;
   border: none;
   background: #e53e3e;
+  box-shadow:
+    0 0 0 1px rgba(255, 89, 30, 1),
+    0 1px 3px 0 rgba(200, 207, 233, 1);
   color: white;
   cursor: pointer;
   font-size: 14px;
   font-weight: 600;
+  transition: box-shadow 150ms ease-in-out;
+
+  &:hover {
+    box-shadow: 0 1px 3px 3px rgba(200, 207, 233, 1);
+  }
 }

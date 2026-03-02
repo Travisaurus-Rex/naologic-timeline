@@ -39,9 +39,8 @@ export class WorkOrderBar {
   private menuRef: OverlayRef | null = null;
   private toolbarRef: OverlayRef | null = null;
 
-  get displayMode(): 'full' | 'pill-only' | 'minimal' {
-    if (this.width >= 200) return 'full';
-    if (this.width >= 90) return 'pill-only';
+  get displayMode(): 'full' | 'minimal' {
+    if (this.width >= 100) return 'full';
     return 'minimal';
   }
 
@@ -53,15 +52,23 @@ export class WorkOrderBar {
     clearTimeout(this.hideDelay);
     if (this.displayMode !== 'minimal' || this.toolbarRef) return;
     const bar = event.currentTarget as HTMLElement;
-    const rect = bar.getBoundingClientRect();
+
+    const positionStrategy = this.overlay
+      .position()
+      .flexibleConnectedTo(bar)
+      .withPositions([
+        {
+          originX: 'center',
+          originY: 'bottom',
+          overlayX: 'center',
+          overlayY: 'top',
+          offsetY: 10,
+        },
+      ]);
 
     this.toolbarRef = this.overlay.create({
       hasBackdrop: false,
-      positionStrategy: this.overlay
-        .position()
-        .global()
-        .top(`${rect.top - 38}px`)
-        .left(`${rect.left}px`),
+      positionStrategy,
       scrollStrategy: this.overlay.scrollStrategies.close(),
     });
 

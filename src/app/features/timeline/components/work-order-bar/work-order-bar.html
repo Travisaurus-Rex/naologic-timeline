@@ -9,9 +9,7 @@
 >
   @if (displayMode === 'full') {
     <span class="bar-label">{{ order.data.name }}</span>
-  }
 
-  @if (displayMode !== 'minimal') {
     <div class="bar-right">
       <app-pill [status]="order.data.status"></app-pill>
       <button class="edit-btn" (click)="toggleMenu($event)">...</button>
