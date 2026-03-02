@@ -10,12 +10,15 @@
   border-radius: 8px;
   background: white;
   overflow: hidden;
+  height: calc(100vh - 200px);
+  align-items: stretch;
 }
 
 .left-panel {
   width: 280px;
   flex-shrink: 0;
   border-right: 1px solid #e5e5e5;
+  overflow: hidden;
 }
 
 .left-header {
@@ -41,6 +44,7 @@
 .right-panel {
   flex: 1;
   overflow-x: auto;
+  overflow-y: auto;
 }
 
 .header-row {

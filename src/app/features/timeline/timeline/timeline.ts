@@ -35,11 +35,11 @@ export class Timeline {
   columnWidth = computed(() => {
     switch (this.timescale()) {
       case 'day':
-        return 150;
+        return 200;
       case 'week':
-        return 400;
+        return 150;
       case 'month':
-        return 800;
+        return 100;
     }
   });
 
@@ -55,11 +55,11 @@ export class Timeline {
   pxPerDay = computed(() => {
     switch (this.timescale()) {
       case 'day':
-        return this.columnWidth();
+        return 150;
       case 'week':
-        return this.columnWidth() / 7;
+        return 120 / 7;
       case 'month':
-        return this.columnWidth() / 30;
+        return 100 / 30;
     }
   });
 
@@ -131,71 +131,24 @@ export class Timeline {
   onGridMouseMove(event: MouseEvent, workCenterId: string): void {
     const rightPanel = event.currentTarget as HTMLElement;
     const container = rightPanel.closest('.right-panel') as HTMLElement;
-    if (!container) return;
-
     const panelRect = container.getBoundingClientRect();
     const scrollLeft = container.scrollLeft;
-    const xInContent = event.clientX - panelRect.left + scrollLeft;
-
-    const cols = this.columns(); // Date[]
-    const colWidth = this.columnWidth();
-
-    let accumulatedWidth = 0;
-    let hoveredColIndex = -1;
-
-    // find which column the mouse is over
-    for (let i = 0; i < cols.length; i++) {
-      const colStartX = accumulatedWidth;
-      const colEndX = accumulatedWidth + colWidth;
-
-      if (xInContent >= colStartX && xInContent < colEndX) {
-        hoveredColIndex = i;
-        break;
-      }
-
-      accumulatedWidth += colWidth;
-    }
-
-    if (hoveredColIndex === -1) {
-      this.hoveredDate.set(null);
-      this.ghostLeft.set(-9999);
-      return;
-    }
-
-    // determine number of days this column spans
-    let colStart = cols[hoveredColIndex];
-    let colEnd: Date;
-
-    if (this.timescale() === 'day') {
-      colEnd = colStart;
-    } else if (this.timescale() === 'week') {
-      colEnd = addDays(colStart, 6);
-    } else if (this.timescale() === 'month') {
-      const year = colStart.getFullYear();
-      const month = colStart.getMonth();
-      colEnd = new Date(year, month + 1, 0); // last day of month
-    } else {
-      colEnd = colStart;
-    }
-
-    const daysInCol =
-      Math.ceil((colEnd.getTime() - colStart.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-    const dayWidth = colWidth / daysInCol;
-
-    // determine which day the mouse is over inside the column
-    const xInCol = xInContent - accumulatedWidth;
-    const dayIndex = Math.floor(xInCol / dayWidth);
-    const hoveredDate = addDays(colStart, dayIndex);
+    const xForDate = event.clientX - panelRect.left + scrollLeft;
+    const xForGhost = xForDate - this.columnWidth() / 2;
+    const maxLeft = (this.columns().length - 1) * this.columnWidth();
+    const clampedX = Math.max(0, Math.min(xForGhost, maxLeft));
+    const days = Math.floor(xForDate / this.pxPerDay());
+    const hovered = addDays(this.timelineStart(), days);
 
     const isOverOrder = this.workOrders().some(
       (o) =>
         o.data.workCenterId === workCenterId &&
-        hoveredDate >= new Date(o.data.startDate) &&
-        hoveredDate <= new Date(o.data.endDate),
+        hovered >= new Date(o.data.startDate) &&
+        hovered <= new Date(o.data.endDate),
     );
 
-    this.hoveredDate.set(isOverOrder ? null : hoveredDate);
-    this.ghostLeft.set(isOverOrder ? -9999 : accumulatedWidth + dayIndex * dayWidth);
+    this.hoveredDate.set(isOverOrder ? null : hovered);
+    this.ghostLeft.set(isOverOrder ? -9999 : clampedX);
     this.hoveredWorkCenterId.set(workCenterId);
   }
 
@@ -203,6 +156,12 @@ export class Timeline {
     this.workOrders.update((orders: WorkOrderDocument[]) =>
       orders.filter((o: WorkOrderDocument) => o.docId !== order.docId),
     );
+  }
+
+  onRightPanelScroll(event: Event): void {
+    const rightPanel = event.target as HTMLElement;
+    const leftPanel = document.querySelector('.left-panel') as HTMLElement;
+    leftPanel.scrollTop = rightPanel.scrollTop;
   }
 
   // ===== CRUD =====

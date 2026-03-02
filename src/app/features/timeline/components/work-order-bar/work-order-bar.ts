@@ -30,13 +30,17 @@ export class WorkOrderBar {
   @Output() edited = new EventEmitter<WorkOrderDocument>();
   @ViewChild('dropdownTemplate') dropdownTemplate!: TemplateRef<any>;
 
-  constructor() {
-    console.log(this.width);
-  }
-
   private overlay = inject(Overlay);
   private vcr = inject(ViewContainerRef);
   private overlayRef: OverlayRef | null = null;
+
+  get displayMode(): 'full' | 'pill-only' | 'minimal' {
+    if (this.width >= 200) return 'full';
+    if (this.width >= 90) return 'pill-only';
+    return 'minimal';
+  }
+
+  showTooltip = false;
 
   onDelete() {
     this.overlayRef?.dispose();

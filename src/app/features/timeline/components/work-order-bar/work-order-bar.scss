@@ -79,3 +79,26 @@
 .delete {
   color: #3e40db;
 }
+
+.bar-right.hidden {
+  display: none;
+}
+
+.bar-tooltip {
+  position: absolute;
+  background: #1a1a2e;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-20px, -30px);
+}
+
+.minimal-edit {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}

@@ -16,10 +16,10 @@
       }
     </div>
 
-    <div class="right-panel">
+    <div class="right-panel" (scroll)="onRightPanelScroll($event)">
       <div class="header-row">
         @for (col of columns(); track col.getTime()) {
-          <div class="col-header" [style.min-width.px]="columnWidth()">
+          <div class="col-header" [style.width.px]="columnWidth()">
             {{ col | colHeader: timescale() }}
           </div>
         }
@@ -34,14 +34,14 @@
           (click)="onGridClick(wc.docId)"
         >
           @for (col of columns(); track col.getTime()) {
-            <div class="grid-cell" [style.min-width.px]="columnWidth()"></div>
+            <div class="grid-cell" [style.width.px]="columnWidth()"></div>
           }
 
           @if (hoveredWorkCenterId() === wc.docId && hoveredDate()) {
             <div
               class="ghost-box"
               [style.left.px]="ghostLeft()"
-              [style.width.px]="pxPerDay()"
+              [style.width.px]="columnWidth()"
             ></div>
           }
 
