@@ -29,9 +29,9 @@ export class WorkOrderBar {
   @Input() width!: number;
   @Output() deleted = new EventEmitter<WorkOrderDocument>();
   @Output() edited = new EventEmitter<WorkOrderDocument>();
-  @ViewChild('dropdownTemplate') dropdownTemplate!: TemplateRef<any>;
+  @ViewChild('dropdownTemplate') dropdownTemplate!: TemplateRef<void>;
   @ViewChild('toolbarTemplate') toolbarTemplate!: TemplateRef<WorkOrderBar>;
-  @ViewChild('confirmTemplate') confirmTemplate!: TemplateRef<any>;
+  @ViewChild('confirmTemplate') confirmTemplate!: TemplateRef<void>;
   private confirmRef: OverlayRef | null = null;
 
   private overlay = inject(Overlay);
