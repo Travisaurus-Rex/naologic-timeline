@@ -1,18 +1,11 @@
-import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  SimpleChanges,
-  OnChanges,
-  OnInit,
-} from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Pill } from '../../../../core/components/pill/pill';
 import { WorkOrderData, WorkOrderDocument, WorkOrderStatus } from '../../../../models/work-order';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { StatusLabelPipe } from '../../../../core/pipes/status-label';
+import { TimelineService } from '../../services/timeline-service';
 
 @Component({
   selector: 'app-work-order-panel',
@@ -23,7 +16,7 @@ import { StatusLabelPipe } from '../../../../core/pipes/status-label';
 })
 export class WorkOrderPanel implements OnInit, OnChanges {
   isVisible: boolean = false;
-
+  @Input() workCenterId!: string;
   @Input() mode: 'create' | 'edit' = 'create';
   @Input() startDate?: Date;
   @Input() order: WorkOrderDocument | null = null;
@@ -34,6 +27,7 @@ export class WorkOrderPanel implements OnInit, OnChanges {
     requestAnimationFrame(() => (this.isVisible = true));
   }
 
+  service = inject(TimelineService);
   statuses: WorkOrderStatus[] = ['open', 'in-progress', 'complete', 'blocked'];
 
   form = new FormGroup({
@@ -76,6 +70,24 @@ export class WorkOrderPanel implements OnInit, OnChanges {
   onSave(): void {
     if (this.form.invalid) return;
     const val = this.form.getRawValue();
+
+    const start = new Date(val.startDate);
+    const end = new Date(val.endDate);
+
+    if (start >= end) {
+      this.form.setErrors({ dateRange: true });
+      return;
+    }
+
+    if (!this.workCenterId) return;
+
+    const conflict = this.service.hasConflict(this.workCenterId, start, end, this.order?.docId);
+
+    if (conflict) {
+      this.form.setErrors({ dateConflict: true });
+      return;
+    }
+
     this.saved.emit(val);
   }
 

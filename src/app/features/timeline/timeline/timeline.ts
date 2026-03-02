@@ -1,4 +1,4 @@
-import { Component, computed, ElementRef, signal, ViewChild } from '@angular/core';
+import { Component, computed, ElementRef, inject, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { addDays, differenceInDays } from 'date-fns';
 
@@ -6,7 +6,6 @@ import { TimelineHeader } from '../components/timeline-header/timeline-header';
 import { WorkOrderBar } from '../components/work-order-bar/work-order-bar';
 import { WorkOrderPanel } from '../components/work-order-panel/work-order-panel';
 
-import { WORK_CENTERS, WORK_ORDERS } from '../../../data/data';
 import { ColHeaderPipe } from '../../../core/pipes/column-header';
 import { WorkOrderData, WorkOrderDocument } from '../../../models/work-order';
 import {
@@ -15,20 +14,24 @@ import {
   calculateTimelineEnd,
   calculateTimelineStart,
 } from '../utils/timeline.utils';
+import { TimelineService } from '../services/timeline-service';
 
 @Component({
   selector: 'app-timeline',
+  providers: [TimelineService],
   imports: [CommonModule, TimelineHeader, WorkOrderBar, ColHeaderPipe, WorkOrderPanel],
   templateUrl: './timeline.html',
   styleUrl: './timeline.scss',
 })
 export class Timeline {
+  service = inject(TimelineService);
+
   @ViewChild('rightPanel') rightPanelRef!: ElementRef<HTMLElement>;
 
   // ===== DATA =====
 
-  workCenters = WORK_CENTERS;
-  workOrders = signal<WorkOrderDocument[]>(WORK_ORDERS);
+  workCenters = this.service.workCenters;
+  workOrders = this.service.workOrders;
 
   // ===== CONFIG =====
 
@@ -132,7 +135,7 @@ export class Timeline {
   }
 
   onPanelSaved(data: Omit<WorkOrderData, 'workCenterId'>): void {
-    const workCenterId: string | null = this.activeWorkCenterId;
+    const workCenterId = this.activeWorkCenterId;
     if (!workCenterId) return;
 
     const fullData: WorkOrderData = {
@@ -141,16 +144,11 @@ export class Timeline {
     };
 
     if (this.panelMode() === 'edit' && this.selectedOrder()) {
-      this.updateOrder({
-        ...this.selectedOrder()!,
-        data: fullData,
-      });
+      const updated = this.service.buildDocument(fullData, this.selectedOrder()!.docId);
+      this.service.update(updated);
     } else {
-      this.createOrder({
-        docId: crypto.randomUUID(),
-        docType: 'workOrder',
-        data: fullData,
-      });
+      const created = this.service.buildDocument(fullData);
+      this.service.create(created);
     }
 
     this.panelOpen.set(false);
@@ -187,12 +185,6 @@ export class Timeline {
     this.hoveredWorkCenterId.set(workCenterId);
   }
 
-  deleteOrder(order: WorkOrderDocument): void {
-    this.workOrders.update((orders: WorkOrderDocument[]) =>
-      orders.filter((o: WorkOrderDocument) => o.docId !== order.docId),
-    );
-  }
-
   onRightPanelScroll(event: Event): void {
     const rightPanel = event.target as HTMLElement;
     const leftPanel = document.querySelector('.left-panel') as HTMLElement;
@@ -204,17 +196,5 @@ export class Timeline {
       left: this.todayLeft() - 200,
       behavior: 'smooth',
     });
-  }
-
-  // ===== CRUD =====
-
-  private createOrder(order: WorkOrderDocument): void {
-    this.workOrders.update((orders: WorkOrderDocument[]) => [...orders, order]);
-  }
-
-  private updateOrder(updated: WorkOrderDocument): void {
-    this.workOrders.update((orders: WorkOrderDocument[]) =>
-      orders.map((o: WorkOrderDocument) => (o.docId === updated.docId ? updated : o)),
-    );
   }
 }

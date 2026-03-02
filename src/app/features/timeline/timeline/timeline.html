@@ -7,7 +7,7 @@
   <div class="grid-container">
     <div class="left-panel">
       <div class="left-header">Work Center</div>
-      @for (wc of workCenters; track wc.docId) {
+      @for (wc of workCenters(); track wc.docId) {
         <div
           class="left-row"
           [class.row-hovered]="hoveredWorkCenterId() === wc.docId"
@@ -40,7 +40,7 @@
         }
       </div>
 
-      @for (wc of workCenters; track wc.docId) {
+      @for (wc of workCenters(); track wc.docId) {
         <div
           class="grid-row"
           [class.row-hovered]="hoveredWorkCenterId() === wc.docId"
@@ -67,7 +67,7 @@
                 [width]="pos.width"
                 (click)="$event.stopPropagation()"
                 (edited)="onEditOrder($event)"
-                (deleted)="deleteOrder($event)"
+                (deleted)="service.delete($event.docId)"
               ></app-work-order-bar>
             }
           }
@@ -78,6 +78,7 @@
 </div>
 @if (panelOpen()) {
   <app-work-order-panel
+    [workCenterId]="activeWorkCenterId!"
     [mode]="panelMode()"
     [order]="selectedOrder()"
     [startDate]="createOrderStartDate"

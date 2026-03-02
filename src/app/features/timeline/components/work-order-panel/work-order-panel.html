@@ -49,5 +49,12 @@
       <label>Start Date</label>
       <input type="date" formControlName="startDate" />
     </div>
+    @if (form.errors?.['dateRange']) {
+      <div class="error">End date must be after start date.</div>
+    }
+
+    @if (form.errors?.['dateConflict']) {
+      <div class="error">This work order overlaps an existing order in this work center.</div>
+    }
   </div>
 </div>
