@@ -14,14 +14,28 @@ type Timescale = 'day' | 'week' | 'month';
 })
 export class TimelineHeader {
   @Output() timescaleChange = new EventEmitter<Timescale>();
+  @Output() scrollToToday = new EventEmitter<void>();
 
   timescaleOptions: Timescale[] = ['day', 'week', 'month'];
 
   timescaleControl = new FormControl<Timescale>('month', { nonNullable: true });
 
+  todayLabel = 'Current Month';
+
   constructor() {
     this.timescaleControl.valueChanges.subscribe((value: Timescale) => {
       this.timescaleChange.emit(value);
+      switch (value) {
+        case 'day':
+          this.todayLabel = 'Today';
+          break;
+        case 'week':
+          this.todayLabel = 'Current Week';
+          break;
+        case 'month':
+          this.todayLabel = 'Current Month';
+          break;
+      }
     });
   }
 }

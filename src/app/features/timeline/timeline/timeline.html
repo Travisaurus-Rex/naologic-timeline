@@ -1,5 +1,8 @@
 <div class="page-wrapper">
-  <app-timeline-header (timescaleChange)="timescale.set($event)"></app-timeline-header>
+  <app-timeline-header
+    (timescaleChange)="timescale.set($event)"
+    (scrollToToday)="scrollToToday()"
+  ></app-timeline-header>
 
   <div class="grid-container">
     <div class="left-panel">
@@ -16,7 +19,7 @@
       }
     </div>
 
-    <div class="right-panel" (scroll)="onRightPanelScroll($event)">
+    <div class="right-panel" #rightPanel (scroll)="onRightPanelScroll($event)">
       <div class="today-indicator" [style.left.px]="todayLeft()" [style.height.px]="gridHeight()">
         <div class="today-label">
           {{

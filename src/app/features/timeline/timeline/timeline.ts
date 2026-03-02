@@ -1,4 +1,4 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, ElementRef, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { addDays, differenceInDays } from 'date-fns';
 
@@ -23,9 +23,8 @@ import {
   styleUrl: './timeline.scss',
 })
 export class Timeline {
-  constructor() {
-    console.log(new Date('2026-01-05'));
-  }
+  @ViewChild('rightPanel') rightPanelRef!: ElementRef<HTMLElement>;
+
   // ===== DATA =====
 
   workCenters = WORK_CENTERS;
@@ -196,6 +195,13 @@ export class Timeline {
     const rightPanel = event.target as HTMLElement;
     const leftPanel = document.querySelector('.left-panel') as HTMLElement;
     leftPanel.scrollTop = rightPanel.scrollTop;
+  }
+
+  scrollToToday(): void {
+    this.rightPanelRef.nativeElement.scrollTo({
+      left: this.todayLeft() - 200,
+      behavior: 'smooth',
+    });
   }
 
   // ===== CRUD =====
