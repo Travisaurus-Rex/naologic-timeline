@@ -30,7 +30,7 @@ export class WorkOrderPanel implements OnInit, OnChanges {
   @Output() closed = new EventEmitter<void>();
   @Output() saved = new EventEmitter<Omit<WorkOrderData, 'workCenterId'>>();
 
-  ngOnInit() {
+  ngOnInit(): void {
     requestAnimationFrame(() => (this.isVisible = true));
   }
 
@@ -49,7 +49,7 @@ export class WorkOrderPanel implements OnInit, OnChanges {
     endDate: new FormControl('', { nonNullable: true, validators: Validators.required }),
   });
 
-  ngOnChanges() {
+  ngOnChanges(): void {
     if (this.mode === 'edit' && this.order) {
       this.form.patchValue({
         name: this.order.data.name,
@@ -73,13 +73,13 @@ export class WorkOrderPanel implements OnInit, OnChanges {
     return this.mode === 'edit';
   }
 
-  onSave() {
+  onSave(): void {
     if (this.form.invalid) return;
     const val = this.form.getRawValue();
     this.saved.emit(val);
   }
 
-  onClose() {
+  onClose(): void {
     this.isVisible = false;
     setTimeout(() => this.closed.emit(), 300);
   }

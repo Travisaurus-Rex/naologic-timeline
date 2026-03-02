@@ -47,9 +47,9 @@ export class WorkOrderBar {
 
   // ===== TOOLBAR =====
 
-  private hideDelay: any;
+  private hideDelay: number = 0;
 
-  openToolbar(event: MouseEvent) {
+  openToolbar(event: MouseEvent): void {
     clearTimeout(this.hideDelay);
     if (this.displayMode !== 'minimal' || this.toolbarRef) return;
     const bar = event.currentTarget as HTMLElement;
@@ -68,20 +68,20 @@ export class WorkOrderBar {
     this.toolbarRef.attach(new TemplatePortal(this.toolbarTemplate, this.vcr));
   }
 
-  closeToolbar() {
+  closeToolbar(): void {
     this.hideDelay = setTimeout(() => {
       this.toolbarRef?.dispose();
       this.toolbarRef = null;
     }, 100);
   }
 
-  keepToolbar() {
+  keepToolbar(): void {
     clearTimeout(this.hideDelay);
   }
 
   // ===== DROPDOWN MENU =====
 
-  onEdit() {
+  onEdit(): void {
     this.menuRef?.dispose();
     this.menuRef = null;
     this.toolbarRef?.dispose();
@@ -89,7 +89,7 @@ export class WorkOrderBar {
     this.edited.emit(this.order);
   }
 
-  toggleMenu(event: MouseEvent) {
+  toggleMenu(event: MouseEvent): void {
     event.stopPropagation();
 
     if (this.menuRef) {
@@ -120,7 +120,7 @@ export class WorkOrderBar {
     this.menuRef.attach(new TemplatePortal(this.dropdownTemplate, this.vcr));
   }
 
-  onDelete() {
+  onDelete(): void {
     this.menuRef?.dispose();
     this.menuRef = null;
 
@@ -139,13 +139,13 @@ export class WorkOrderBar {
     this.confirmRef.attach(new TemplatePortal(this.confirmTemplate, this.vcr));
   }
 
-  confirmDelete() {
+  confirmDelete(): void {
     this.confirmRef?.dispose();
     this.confirmRef = null;
     this.deleted.emit(this.order);
   }
 
-  cancelDelete() {
+  cancelDelete(): void {
     this.confirmRef?.dispose();
     this.confirmRef = null;
   }
