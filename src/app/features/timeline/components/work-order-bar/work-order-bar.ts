@@ -30,6 +30,8 @@ export class WorkOrderBar {
   @Output() edited = new EventEmitter<WorkOrderDocument>();
   @ViewChild('dropdownTemplate') dropdownTemplate!: TemplateRef<any>;
   @ViewChild('toolbarTemplate') toolbarTemplate!: TemplateRef<any>;
+  @ViewChild('confirmTemplate') confirmTemplate!: TemplateRef<any>;
+  private confirmRef: OverlayRef | null = null;
 
   private overlay = inject(Overlay);
   private vcr = inject(ViewContainerRef);
@@ -78,12 +80,6 @@ export class WorkOrderBar {
 
   // ===== DROPDOWN MENU =====
 
-  onDelete() {
-    this.menuRef?.dispose();
-    this.menuRef = null;
-    this.deleted.emit(this.order);
-  }
-
   onEdit() {
     this.menuRef?.dispose();
     this.menuRef = null;
@@ -121,5 +117,35 @@ export class WorkOrderBar {
     });
 
     this.menuRef.attach(new TemplatePortal(this.dropdownTemplate, this.vcr));
+  }
+
+  onDelete() {
+    this.menuRef?.dispose();
+    this.menuRef = null;
+
+    this.confirmRef = this.overlay.create({
+      hasBackdrop: true,
+      backdropClass: 'cdk-overlay-dark-backdrop',
+      positionStrategy: this.overlay.position().global().centerHorizontally().centerVertically(),
+      scrollStrategy: this.overlay.scrollStrategies.block(),
+    });
+
+    this.confirmRef.backdropClick().subscribe(() => {
+      this.confirmRef?.dispose();
+      this.confirmRef = null;
+    });
+
+    this.confirmRef.attach(new TemplatePortal(this.confirmTemplate, this.vcr));
+  }
+
+  confirmDelete() {
+    this.confirmRef?.dispose();
+    this.confirmRef = null;
+    this.deleted.emit(this.order);
+  }
+
+  cancelDelete() {
+    this.confirmRef?.dispose();
+    this.confirmRef = null;
   }
 }

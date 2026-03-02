@@ -72,3 +72,13 @@
     <button class="dropdown-item delete" (click)="onDelete()">Delete</button>
   </div>
 </ng-template>
+
+<ng-template #confirmTemplate>
+  <div class="confirm-dialog">
+    <p>Are you sure you want to delete this work order?</p>
+    <div class="confirm-actions">
+      <button class="btn-cancel" (click)="cancelDelete()">Cancel</button>
+      <button class="btn-delete" (click)="confirmDelete()">Delete</button>
+    </div>
+  </div>
+</ng-template>

@@ -144,3 +144,46 @@
     background: #f5f5f8;
   }
 }
+
+.confirm-dialog {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  width: 360px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+
+  p {
+    font-size: 15px;
+    color: #1a1a2e;
+    margin: 0 0 20px;
+  }
+}
+
+.confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.btn-cancel {
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 6px;
+  border: 1px solid #e5e5e5;
+  background: white;
+  cursor: pointer;
+  font-size: 14px;
+  color: #1a1a2e;
+}
+
+.btn-delete {
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 6px;
+  border: none;
+  background: #e53e3e;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
