@@ -100,7 +100,7 @@ export class Timeline {
     }
   });
 
-  gridHeight = computed(() => (this.workCenters.length + 1) * 48);
+  gridHeight = computed(() => (this.workCenters().length + 1) * 48);
 
   // ===== INTERACTION STATE =====
 
