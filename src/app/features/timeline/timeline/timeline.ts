@@ -1,6 +1,6 @@
 import { Component, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { addDays } from 'date-fns';
+import { addDays, differenceInDays } from 'date-fns';
 
 import { TimelineHeader } from '../components/timeline-header/timeline-header';
 import { WorkOrderBar } from '../components/work-order-bar/work-order-bar';
@@ -69,6 +69,36 @@ export class Timeline {
   barPositions = computed(() =>
     calculateBarPositions(this.workOrders(), this.timelineStart(), this.pxPerDay()),
   );
+
+  todayLeft = computed(() => {
+    const today = new Date();
+    const start = this.timelineStart();
+
+    switch (this.timescale()) {
+      case 'month': {
+        const monthDiff =
+          (today.getFullYear() - start.getUTCFullYear()) * 12 +
+          (today.getMonth() - start.getUTCMonth());
+        return monthDiff * this.columnWidth();
+      }
+      case 'week': {
+        const diff = differenceInDays(
+          new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate())),
+          start,
+        );
+        return Math.floor(diff / 7) * this.columnWidth();
+      }
+      case 'day': {
+        const diff = differenceInDays(
+          new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate())),
+          start,
+        );
+        return diff * this.columnWidth();
+      }
+    }
+  });
+
+  gridHeight = computed(() => (this.workCenters.length + 1) * 48);
 
   // ===== INTERACTION STATE =====
 

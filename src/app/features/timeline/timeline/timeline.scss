@@ -45,6 +45,7 @@
   flex: 1;
   overflow-x: auto;
   overflow-y: auto;
+  position: relative;
 }
 
 .header-row {
@@ -118,4 +119,34 @@
   border-radius: 6px;
   font-size: 12px;
   white-space: nowrap;
+}
+
+.today-indicator {
+  position: absolute;
+  top: 48px;
+  bottom: 0;
+  pointer-events: none;
+  height: 100%;
+}
+
+.today-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: #d4d7ff;
+  left: 0;
+}
+
+.today-label {
+  position: absolute;
+  left: 0;
+  background: #d4d7ff;
+  color: #3e40db;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 0 0 5px 5px;
+  white-space: nowrap;
+  z-index: 3;
 }

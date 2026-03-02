@@ -3,9 +3,9 @@ import { WorkOrderStatus } from './work-order';
 
 export const BAR_STYLES: Record<WorkOrderStatus, any> = {
   open: {
-    boxShadow: 'none',
+    boxShadow: '0 0 0 1px #CEFBFF',
     borderRadius: '8px',
-    backgroundColor: '#CEFBFF',
+    backgroundColor: '#e3fdff',
   },
   'in-progress': {
     boxShadow: '0 0 0 1px rgba(222, 224, 255, 1)',

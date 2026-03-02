@@ -17,6 +17,18 @@
     </div>
 
     <div class="right-panel" (scroll)="onRightPanelScroll($event)">
+      <div class="today-indicator" [style.left.px]="todayLeft()" [style.height.px]="gridHeight()">
+        <div class="today-label">
+          {{
+            timescale() === 'day'
+              ? 'Today'
+              : timescale() === 'week'
+                ? 'Current week'
+                : 'Current month'
+          }}
+        </div>
+        <div class="today-line"></div>
+      </div>
       <div class="header-row">
         @for (col of columns(); track col.getTime()) {
           <div class="col-header" [style.width.px]="columnWidth()">
@@ -24,6 +36,7 @@
           </div>
         }
       </div>
+
       @for (wc of workCenters; track wc.docId) {
         <div
           class="grid-row"
