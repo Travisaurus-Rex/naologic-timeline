@@ -103,48 +103,6 @@
   width: 100%;
 }
 
-.floating-toolbar {
-  background: white;
-  border-radius: 8px;
-  border: 2px solid lightgray;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-  padding: 6px 10px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  white-space: nowrap;
-  z-index: 9999;
-  pointer-events: all;
-}
-
-.toolbar-name {
-  font-size: 13px;
-  color: #1a1a2e;
-  max-width: 200px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.toolbar-divider {
-  width: 1px;
-  height: 16px;
-  background: #e5e5e5;
-}
-
-.toolbar-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px 6px;
-  border-radius: 4px;
-  color: gray;
-
-  &:hover {
-    background: #f5f5f8;
-  }
-}
-
 .confirm-dialog {
   background: white;
   border-radius: 12px;

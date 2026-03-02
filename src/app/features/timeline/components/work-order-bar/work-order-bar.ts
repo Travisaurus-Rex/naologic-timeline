@@ -14,11 +14,12 @@ import {
   ViewContainerRef,
   inject,
 } from '@angular/core';
+import { WorkOrderToolbar } from '../work-order-toolbar/work-order-toolbar';
 
 @Component({
   selector: 'app-work-order-bar',
   standalone: true,
-  imports: [NgStyle, Pill, BarStylePipe],
+  imports: [NgStyle, Pill, BarStylePipe, WorkOrderToolbar],
   templateUrl: './work-order-bar.html',
   styleUrl: './work-order-bar.scss',
 })
@@ -29,7 +30,7 @@ export class WorkOrderBar {
   @Output() deleted = new EventEmitter<WorkOrderDocument>();
   @Output() edited = new EventEmitter<WorkOrderDocument>();
   @ViewChild('dropdownTemplate') dropdownTemplate!: TemplateRef<any>;
-  @ViewChild('toolbarTemplate') toolbarTemplate!: TemplateRef<any>;
+  @ViewChild('toolbarTemplate') toolbarTemplate!: TemplateRef<WorkOrderBar>;
   @ViewChild('confirmTemplate') confirmTemplate!: TemplateRef<any>;
   private confirmRef: OverlayRef | null = null;
 
